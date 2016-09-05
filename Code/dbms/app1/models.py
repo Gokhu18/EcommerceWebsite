@@ -1,0 +1,125 @@
+from django.db import models
+
+# Create your models here.
+
+# PID OF THE 'GOOD' TABLE IS THE BASE. SO AN ADMIN MUST ALWAYS ENTER THE GOOD FIRST INTO THE GOOD TABLE BEFORE CORRESPODING ENTRIES ARE MADE INTO THE RESPECTIVE TABLES
+# THIS ENSURES THAT BY DELETING THIS RECORD, ALL CORRESPONDING ENTRIES IN ALL OTHER TABLES ARE DELETED
+# Changes in ER - 1) INCLUSION OF SID IN PRODUCT BECAUSE EVERY PRODUCT NEEDS TO HAVE A SELLER
+#				- 2) DISCOUNT IS NOW INCLUDED IN PRODUCT TABLE BECAUSE IT PROVIDES A MORE REALISTIC SCENARIO WHEREIN A SELLER IS OFFERING MULTIPLE DISCOUNTS
+#				- 3) ACCESSORIES OFFERED WITH A PRODUCT ,RATING TO A SELLER . ALL THIS IS TO FUNDAMENTALLY DISTINGUISH TWO PRODUCTS IDENTICAL IN ALL RIGHTS MINUS THE PID ( EG- DELL INSPIRON SOLD BY SELLER A as well as SELLER B)
+#				- 4) CREATED A TABLE CALLED GOODS PRIMARILY TO AVOID DATA REDUNDANCY IN ALL THE TABLES LIKE MOBILES,LAPTOPS ETC. ALL THE FOREIGN KEYS OF THOSE TABLES NOW POINT TO GOODS TABLE RATHER THAN PRODUCT
+
+
+class Good(models.Model):
+	brand = models.CharField(max_length=10)
+	product_name = models.CharField(max_length=30)
+	pid = models.PositiveIntegerField(default=0,primary_key=True)
+        category = models.CharField(max_length=50,null=True)
+    
+    #category = models.CharField(max_length=50,blank=True)
+	def __unicode__(self):
+		return u'%s %s' % (self.brand, self.product_name)
+
+class Seller(models.Model):                                                    #CHANGE MADE HERE
+    sid = models.CharField(max_length=20,primary_key=True)
+    name = models.CharField(max_length=20,unique=True)
+    delivery_time = models.PositiveIntegerField(max_length=10)
+    rating = models.IntegerField()
+    def __unicode__(self):
+        return self.name
+
+class Product(models.Model):
+    #name = models.CharField(max_length=30)
+    #category = models.CharField(max_length=50)
+    price = models.PositiveIntegerField(max_length=60)
+    qty_left = models.PositiveIntegerField(max_length=30)
+    goodsid = models.ForeignKey(Good)
+    pid = models.CharField(max_length=20,primary_key=True)       # This is to distinguish between two goods(say DELL INSPIRON) sold by 2 vendors
+    #brand = models.CharField(max_length=10)
+    sid = models.ForeignKey(Seller)
+    discount = models.PositiveIntegerField(default=0)                                    #CHANGE MADE HERE
+    accessories = models.CharField(max_length=60,blank=True)								#CHANGE MADE HERE
+    def __unicode__ (self):
+		return unicode(self.goodsid)
+
+class Customer(models.Model):
+    name = models.CharField(max_length=30)
+    address = models.CharField(max_length=50)
+    username = models.CharField(max_length=30,unique="true")
+
+    email = models.EmailField(unique=True)  
+    phoneno = models.PositiveIntegerField(max_length=10)
+    pwd = models.CharField(max_length=20,default='ABCD')
+    custid = models.PositiveIntegerField(max_length=30,default=0,primary_key=True,unique=True)
+    def __unicode__(self):
+        return self.name
+
+class CustomerItems(models.Model):
+    custid = models.ForeignKey(Customer)
+    pid = models.ForeignKey(Product)
+    unique_together = ("custid", "pid")
+    qty = models.PositiveIntegerField(max_length=10) 
+    def __unicode__ (self):
+		return unicode(self.custid)      
+
+class Book(models.Model):
+	author = models.CharField(max_length=30)
+	pid = models.ForeignKey(Good)
+	book_type = models.CharField(max_length=30)
+	def __unicode__ (self):
+		return unicode(self.pid)
+
+
+class Fashion(models.Model):
+    gender = models.CharField(max_length=10)
+    color = models.CharField(max_length=10)
+    #category = models.CharField(max_length=10)
+    pid = models.ForeignKey(Good)
+    material = models.CharField(max_length=10)
+    size = models.CharField(max_length=10)
+    prod_type = models.CharField(max_length=20)
+    unique_together = ("gender", "pid")
+    def __unicode__(self):
+        return unicode(self.pid)
+
+class Media(models.Model):
+    media_type = models.CharField(max_length=20)
+    pid = models.ForeignKey(Good)
+    def __unicode__(self):
+        return unicode(self.pid)
+
+class Mobile(models.Model):
+	simslots = models.PositiveIntegerField(max_length=2,default=1)
+	battery = models.CharField(max_length=10)
+	#category = models.CharField(max_length=10)
+	os = models.CharField(max_length=10)
+	display_size = models.CharField(max_length=10)
+	pid = models.ForeignKey(Good,unique=True)
+	processor = models.CharField(max_length=40)
+	secondary_camera = models.CharField(max_length=10)
+	primary_camera = models.CharField(max_length=10)
+	storage = models.CharField(max_length=10)
+	def __unicode__ (self):
+		return unicode(self.pid)
+
+
+class TV(models.Model):
+	display_size = models.CharField(max_length=10)
+	display_type = models.CharField(max_length=10)
+	pid = models.ForeignKey(Good)
+	features = models.CharField(max_length=50)
+	def __unicode__ (self):
+		return unicode(self.pid)
+
+
+
+class Laptop(models.Model):
+	battery = models.CharField(max_length=40)
+	os = models.CharField(max_length=20)
+	display_size = models.CharField(max_length=20)
+	pid = models.ForeignKey(Good)
+	processor = models.CharField(max_length=40)
+	ram = models.CharField(max_length=10)
+	storage = models.CharField(max_length=10)
+	def __unicode__ (self):
+		return unicode(self.pid)

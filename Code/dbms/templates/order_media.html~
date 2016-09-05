@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <title>E-Commerce Website: Product Specification</title>
+  <link href="/static/css/style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div class="wrapper">
+<div class="warpper-top">
+<div class="top-sh1"></div>
+<div class="banner-area">
+<div class="banner-left-sh1"></div>
+<div class="banner-bg1">
+<div class="banner-txt">
+<div class="banner-txt-left">
+<h1> Order<br>
+<span>Page</span> </h1>
+</div>
+</div>
+<div class="nav-area">
+<ul class="navigation">
+  <li><a href="/customer_home">Home</a></li>
+  <li><a href="/goods">Product List</a></li>
+  <li><a href="/view_cart">View Cart</a></li>
+  <li><a href="/index">Logout</a></li>
+</ul>
+</div>
+<div class="nav-sh"></div>
+</div>
+<div class="banner-right-sh1"></div>
+</div>
+</div>
+<div class="warpper-mid">
+<div class="mid-gap"></div>
+<div class="mid-left">
+
+<form action="/goods/" method="get" style="padding: 10px 0px 5px 30px;">
+	<input class="categories" type="submit" value="BOOKS" name="q">
+	<input class="categories" type="submit" value="FASHION" name="q">
+	<input class="categories" type="submit" value="MOBILES" name="q">
+	<input class="categories" type="submit" value="TV" name="q">
+	<input class="categories" type="submit" value="LAPTOPS" name="q">
+	<input class="categories" type="submit" value="MEDIA" name="q">
+</form>
+<h2 style="padding: 20px 0px 5px 30px;">Media <span>Specification</span></h2></div>
+<br><br><br><br><br>
+<ul>
+{% for good in goods %}
+<li>
+Brand
+	<ul>	
+		{{ good.brand }}
+	</ul>
+</li>
+<li>
+Name
+	<ul>
+		{{ good.product_name }}
+	</ul>
+</li>
+
+{% endfor %}
+</ul>
+
+<ul>
+{% for item in media %}
+<li>
+Media Type
+	<ul>
+		{{ item.media_type }}
+	</ul>
+</li>
+{% endfor %}
+</ul>
+
+
+<table border="1" width="100%" style="padding: 20px 0px 5px 30px;">
+	<tr>
+	<th width="10"> Product ID </th>
+	<th width="150"> Category </th>
+	<th width="150"> Seller ID </th>
+	<th width="10"> Price </th>
+	<th width="10"> Discount </th>
+	<th width="10"> No. Available </th>
+	<th width="10">Add to Cart</th>
+	<th width="10"> Order </th>
+	</tr>
+
+	<ul>
+	{% for prod in products %}
+	<tr>
+	<td width="10"> {{ prod.pid }} </td>
+	<td width="150"> {{ prod.category }} </td>
+	<td width="150"> {{ prod.sid }} </td>	
+	<td width="10"> {{ prod.price }} </td>
+	<td width="10"> {{ prod.discount }} </td>
+	<td width="10"> {{ prod.qty_left }} </td>
+	{% if prod.qty_left > 0 %}		
+	<td> 
+		
+		<form action="/add_to_cart/" method="get">
+			<input class="categories" type="submit" value="ADD TO CART">
+			<input type="hidden" name="pid" value={{ prod.pid }}>		
+		</form>
+	</td>
+	<td> 
+		<form action="/buy/" method="get">
+			<input class="categories" type="submit" value="ORDER">
+			<input type="hidden" name="pid" value={{ prod.pid }}>	
+		</form>
+
+		{% else %}
+		<th width="10"> Out Of Stock </th>
+		<th width="10"> Out Of Stock </th>
+		{% endif %}
+	</td>
+	</tr>
+	{% endfor %}
+	</ul>
+	</table>
+
+<table border="1" width="100%" style="padding: 20px 0px 5px 30px;">
+	<tr>
+	<th width="10"> Seller ID </th>
+	<th width="10"> Name </th>
+	<th width="10"> Delivery Time </th>
+	<th width="10"> Rating </th>
+	</tr>
+
+	<ul>
+	{% for seller in sellers %}
+	<tr>
+	<td width="10"> {{ seller.sid }} </td>
+	<td width="150"> {{ seller.name }} </td>
+	<td width="10"> {{ seller.delivery_time }} </td>
+	<td width="150"> {{ seller.rating }} </td>	
+	
+	</tr>
+	{% endfor %}
+	</ul>
+	</table>
+
+
+<div class="warpper-bot">
+<div class="footer-left">
+<ul class="footer-nav">
+  <li style="border: medium none ;"><a href="/customer_home">Home</a></li>
+  <li><a href="/goods">Product List</a></li>
+  <li><a href="/view_cart">View Cart</a></li>
+  <li><a href="/index">Logout</a></li>
+</ul>
+</div>
+<div class="footer-right">
+</p>
+</div>
+</div>
+</body>
+</html>
